@@ -14,8 +14,19 @@ print(regex.numberOfMatches(in: str)) // 2
 print(regex.test(str)) // true
 ```
 
+### Extracting Data and Captured Groups with `matches(in:)`
+This method allows for easy data extraction, including captured groups.
 
-### Installation
+Result of this method is a `Match` structure with one or more string ranges from the input string. These ranges avoid creating copies of data extracted from the input string, and can be easily used with string subcripting, to create slices (subsstrings).
+
+```swift
+str[matches[0].range] // "16^32"
+str[matches[0].groupRanges[0]] // 32
+str[matches[1].range] // "2^128"
+str[matches[1].groupRanges[0]] // 128
+```
+
+## Installation
 
 No frameworks, just copy and paste!
 
