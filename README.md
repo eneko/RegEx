@@ -1,5 +1,5 @@
 # Regex
-`NSRegularExpression` wrapper for easier use in Swift.
+`NSRegularExpression` wrapper for easier regular expression data extraction in Swift.
 
 ## Usage
 
