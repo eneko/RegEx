@@ -28,8 +28,19 @@ public struct Regex {
         let fullRange = NSRange(string.startIndex..., in: string)
         return regex.numberOfMatches(in: string, range: fullRange)
     }
+}
 
+// MARK: Sugar
+
+extension Regex {
     public func test(_ string: String) -> Bool {
         return numberOfMatches(in: string) > 0
+    }
+
+    public func substrings(from string: String) -> [[Substring]] {
+        let matches = self.matches(in: string)
+        return matches.map { match in
+            return ([match.range] + match.groupRanges).map { string[$0] }
+        }
     }
 }
