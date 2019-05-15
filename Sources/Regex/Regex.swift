@@ -8,19 +8,19 @@ public struct Regex {
     }
 
     public struct Match {
-        public let range: Range<String.Index>
-        public let groupRanges: [Range<String.Index>]
+        public let values: [Substring?]
+        public let ranges: [Range<String.Index>?]
     }
 
     public func matches(in string: String) -> [Match] {
         let fullRange = NSRange(string.startIndex..., in: string)
         let results = regex.matches(in: string, range: fullRange)
         return results.map { result in
-            var ranges = (0..<result.numberOfRanges).compactMap { index -> Range<String.Index>? in
-                let range: NSRange = result.range(at: index)
-                return Range(range, in: string)
+            let ranges = (0..<result.numberOfRanges).map { index in
+                Range(result.range(at: index), in: string)
             }
-            return Match(range: ranges.removeFirst(), groupRanges: ranges)
+            let substrings = ranges.map { $0.flatMap { string[$0] }}
+            return Match(values: substrings, ranges: ranges)
         }
     }
 
@@ -28,19 +28,8 @@ public struct Regex {
         let fullRange = NSRange(string.startIndex..., in: string)
         return regex.numberOfMatches(in: string, range: fullRange)
     }
-}
 
-// MARK: Sugar
-
-extension Regex {
     public func test(_ string: String) -> Bool {
         return numberOfMatches(in: string) > 0
-    }
-
-    public func substrings(from string: String) -> [[Substring]] {
-        let matches = self.matches(in: string)
-        return matches.map { match in
-            return ([match.range] + match.groupRanges).map { string[$0] }
-        }
     }
 }

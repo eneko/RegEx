@@ -8,8 +8,7 @@ let str = "16^32=2^128"
 let regex = try Regex(pattern: #"\d+\^(\d+)"#) // Swift 5 raw string
 
 let matches = regex.matches(in: str) // 2 matches with 1 captured group each
-print(str[matches[0].groupRanges[0]]) // 32
-
+print(matches[0].values) // ["16^32", "32"]
 print(regex.numberOfMatches(in: str)) // 2
 print(regex.test(str)) // true
 ```
@@ -17,13 +16,14 @@ print(regex.test(str)) // true
 ### Extracting Data and Captured Groups with `matches(in:)`
 This method allows for easy data extraction, including captured groups.
 
-Result of this method is a `Match` structure with one or more string ranges from the input string. These ranges avoid creating copies of data extracted from the input string, and can be easily used with string subcripting, to create slices (subsstrings).
+Result of this method is a `Match` structure with one or more string ranges from the input string, as well as one or more
+values extracted as substrings. Using ranges and substrings avoids duplicating data from the input string.
 
 ```swift
-str[matches[0].range] // "16^32"
-str[matches[0].groupRanges[0]] // 32
-str[matches[1].range] // "2^128"
-str[matches[1].groupRanges[0]] // 128
+str[matches[0].ranges[0]] // "16^32"
+str[matches[0].ranges[1]] // 32
+str[matches[1].ranges[0]] // "2^128"
+str[matches[1].ranges[1]] // 128
 ```
 
 ## Installation
@@ -39,19 +39,18 @@ public struct Regex {
     }
 
     public struct Match {
-        public let range: Range<String.Index>
-        public let groupRanges: [Range<String.Index>]
+        public let values: [Substring]
+        public let ranges: [Range<String.Index>]
     }
 
     public func matches(in string: String) -> [Match] {
         let fullRange = NSRange(string.startIndex..., in: string)
         let results = regex.matches(in: string, range: fullRange)
         return results.map { result in
-            var ranges = (0..<result.numberOfRanges).compactMap { index -> Range<String.Index>? in
-                let range: NSRange = result.range(at: index)
-                return Range(range, in: string)
+            let ranges = (0..<result.numberOfRanges).compactMap { index in
+                Range(result.range(at: index), in: string)
             }
-            return Match(range: ranges.removeFirst(), groupRanges: ranges)
+            return Match(values: ranges.map { string[$0] }, ranges: ranges)
         }
     }
 
@@ -65,4 +64,22 @@ public struct Regex {
     }
 }
 ```
+
+### Swift Package Manager
+Actually, I love unit tests, so I made this repo a Swift package that can be imported and used with
+Swift Package Manager.
+
+Add the following code to your `Package.swift` and `"Regex"` to your target dependencies:
+
+```
+dependencies: [
+    [other dependencies],
+    .package(url: "https://github.com/eneko/Regex.git", from: "0.1.0")
+],
+targets: {
+    .target(name: "YourTarget", dependencies: ["Regex"])
+}
+```
+
+If curious, you can run the tests with `$ swift test` or `$swift test --parallel`.
 

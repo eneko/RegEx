@@ -10,13 +10,35 @@ final class RegexTests: XCTestCase {
 
         XCTAssertEqual(matches.count, 2)
 
-        XCTAssertEqual(str[matches[0].range], "16^32")
-        XCTAssertEqual(matches[0].groupRanges.count, 1)
-        XCTAssertEqual(str[matches[0].groupRanges[0]], "32")
+        XCTAssertEqual(matches[0].values.first, "16^32")
+        XCTAssertEqual(matches[0].ranges.count, 2)
+        XCTAssertEqual(matches[0].values[1], "32")
 
-        XCTAssertEqual(str[matches[1].range], "2^128")
-        XCTAssertEqual(matches[1].groupRanges.count, 1)
-        XCTAssertEqual(str[matches[1].groupRanges[0]], "128")
+        XCTAssertEqual(matches[1].values.first, "2^128")
+        XCTAssertEqual(matches[1].ranges.count, 2)
+        XCTAssertEqual(matches[1].values[1], "128")
+    }
+
+    func testNonOverlapping() throws {
+        let regex = try Regex(pattern: "aa")
+        let matches = regex.matches(in: "aaaa")
+        XCTAssertEqual(matches.count, 2)
+        XCTAssertEqual(matches[0].values.count, 1)
+        XCTAssertEqual(matches[1].values.count, 1)
+        XCTAssertEqual(matches[0].values[0], "aa")
+        XCTAssertEqual(matches[1].values[0], "aa")
+    }
+
+    func testNonOverlappingGroups() throws {
+        let regex = try Regex(pattern: "(aa)")
+        let matches = regex.matches(in: "aaaa")
+        XCTAssertEqual(matches.count, 2)
+        XCTAssertEqual(matches[0].values.count, 2)
+        XCTAssertEqual(matches[1].values.count, 2)
+        XCTAssertEqual(matches[0].values[0], "aa")
+        XCTAssertEqual(matches[0].values[1], "aa")
+        XCTAssertEqual(matches[1].values[0], "aa")
+        XCTAssertEqual(matches[1].values[1], "aa")
     }
 
     /// Capturing group test
@@ -27,9 +49,9 @@ final class RegexTests: XCTestCase {
         let matches = regex.matches(in: str)
 
         XCTAssertEqual(matches.count, 1)
-        XCTAssertEqual(str[matches[0].range], "abcabcabc")
-        XCTAssertEqual(matches[0].groupRanges.count, 1)
-        XCTAssertEqual(str[matches[0].groupRanges[0]], "abc")
+        XCTAssertEqual(matches[0].values.first, "abcabcabc")
+        XCTAssertEqual(matches[0].ranges.count, 2)
+        XCTAssertEqual(matches[0].values[1], "abc")
     }
 
     /// Non-Capturing group test
@@ -40,8 +62,8 @@ final class RegexTests: XCTestCase {
         let matches = regex.matches(in: str)
 
         XCTAssertEqual(matches.count, 1)
-        XCTAssertEqual(str[matches[0].range], "abcabcabc")
-        XCTAssertEqual(matches[0].groupRanges.count, 0)
+        XCTAssertEqual(matches[0].values.first, "abcabcabc")
+        XCTAssertEqual(matches[0].ranges.count, 1)
     }
 
     /// Backreference group test
@@ -66,22 +88,69 @@ final class RegexTests: XCTestCase {
     /// https://www.regular-expressions.info/refcapture.html
     func testFailedBackreference() throws {
         let regex = try Regex(pattern: #"(a)?\1"#)
-        XCTAssertEqual(regex.substrings(from: "aa")[0][0], "aa")
-        XCTAssertTrue(regex.substrings(from: "b").isEmpty)
+        XCTAssertEqual(regex.matches(in: "aa")[0].values[0], "aa")
+        XCTAssertTrue(regex.matches(in: "b").isEmpty)
     }
 
-    func testNonOverlapping() throws {
-        let regex = try Regex(pattern: "aa")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[0][0], "aa")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[1][0], "aa")
+    /// Case insensitive group
+    /// https://javascript.info/regexp-groups
+    func testCaseInsensitiveGroup() throws {
+        let regex = try Regex(pattern: "(go)+", options: .caseInsensitive)
+        XCTAssertEqual(regex.matches(in: "Gogogo now!")[0].values[0], "Gogogo")
     }
 
-    func testNonOverlappingGroups() throws {
-        let regex = try Regex(pattern: "(aa)")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[0][0], "aa")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[0][1], "aa")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[1][0], "aa")
-        XCTAssertEqual(regex.substrings(from: "aaaa")[1][1], "aa")
+    /// Email regex
+    /// https://javascript.info/regexp-groups
+    func testEmail() throws {
+        let regex = try Regex(pattern: #"[-.\w]+@([\w-]+\.)+[\w-]{2,20}"#)
+        let matches = regex.matches(in: "my@mail.com @ his@site.com.uk")
+        XCTAssertEqual(matches[0].values[0], "my@mail.com")
+        XCTAssertEqual(matches[1].values[0], "his@site.com.uk")
     }
 
+    /// Nested groups
+    /// https://javascript.info/regexp-groups
+    func testNestedGroups() throws {
+        let regex = try Regex(pattern: #"<(([a-z]+)\s*([^>]*))>"#)
+        let matches = regex.matches(in: #"<span class="my">"#)
+        XCTAssertEqual(matches[0].values[0], "<span class=\"my\">")
+        XCTAssertEqual(matches[0].values[1], "span class=\"my\"")
+        XCTAssertEqual(matches[0].values[2], "span")
+        XCTAssertEqual(matches[0].values[3], "class=\"my\"")
+    }
+
+    /// Missing groups
+    /// https://javascript.info/regexp-groups
+    func testMissingGroups() throws {
+        let regex = try Regex(pattern: "a(z)?(c)?")
+        let matches = regex.matches(in: "a")
+        XCTAssertEqual(matches.count, 1)
+        XCTAssertEqual(matches[0].values.count, 3)
+        XCTAssertEqual(matches[0].values[0], "a")
+        XCTAssertNil(matches[0].values[1]) // no value for group (z)?
+        XCTAssertNil(matches[0].values[2]) // no value for group (c)?
+    }
+
+    /// Missing groups
+    /// https://javascript.info/regexp-groups
+    func testMissingGroupsACK() throws {
+        let regex = try Regex(pattern: "a(z)?(c)?")
+        let matches = regex.matches(in: "ack")
+        XCTAssertEqual(matches.count, 1)
+        XCTAssertEqual(matches[0].values.count, 3)
+        XCTAssertEqual(matches[0].values[0], "ac")
+        XCTAssertNil(matches[0].values[1]) // no value for group (z)?
+        XCTAssertEqual(matches[0].values[2], "c")
+    }
+
+    /// Named groups
+    /// https://javascript.info/regexp-groups
+    func testNamedGroups() throws {
+        let regex = try Regex(pattern: "(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})")
+        let matches = regex.matches(in: "2019-04-30")
+        XCTAssertEqual(matches[0].values[0], "2019-04-30")
+        XCTAssertEqual(matches[0].values[1], "2019")
+        XCTAssertEqual(matches[0].values[2], "04")
+        XCTAssertEqual(matches[0].values[3], "30")
+    }
 }
