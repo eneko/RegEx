@@ -16,8 +16,13 @@ print(regex.test(str)) // true
 ### Extracting Data and Captured Groups with `matches(in:)`
 This method allows for easy data extraction, including captured groups.
 
-Result of this method is a `Match` structure with one or more string ranges from the input string, as well as one or more
-values extracted as substrings. Using ranges and substrings avoids duplicating data from the input string.
+```swift
+let matches = regex.matches(in: str)
+```
+
+The result of this method is a `Match` structure with one or more string ranges from the input string, 
+as well as one or more values extracted as substrings. Using ranges and substrings avoids 
+duplicating data from the input string.
 
 ```swift
 str[matches[0].ranges[0]] // "16^32"
@@ -69,11 +74,10 @@ public struct Regex {
 Actually, I love unit tests, so I made this repo a Swift package that can be imported and used with
 Swift Package Manager.
 
-Add the following code to your `Package.swift` and `"Regex"` to your target dependencies:
+Add the following code to your `Package.swift` :
 
 ```
 dependencies: [
-    [other dependencies],
     .package(url: "https://github.com/eneko/Regex.git", from: "0.1.0")
 ],
 targets: {
@@ -81,5 +85,5 @@ targets: {
 }
 ```
 
+## Unit Tests
 If curious, you can run the tests with `$ swift test` or `$swift test --parallel`.
-
