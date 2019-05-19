@@ -25,7 +25,7 @@ jobs:
       osx_image: xcode10.2
       script:
       - swift package generate-xcodeproj --enable-code-coverage
-      - xcodebuild -scheme Regex-Package test
+      - xcodebuild -scheme RegEx-Package test
       after_success:
       - bash <(curl -s https://codecov.io/bash)
 

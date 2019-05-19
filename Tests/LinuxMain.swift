@@ -1,8 +1,8 @@
 import XCTest
 
-import RegexTests
+import RegExTests
 
 var tests = [XCTestCaseEntry]()
-tests += RegexTests.__allTests()
+tests += RegExTests.__allTests()
 
 XCTMain(tests)

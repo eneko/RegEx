@@ -1,17 +1,17 @@
 //
 //  NoOverlapTests.swift
-//  RegexTests
+//  RegExTests
 //
 //  Created by Eneko Alonso on 5/18/19.
 //
 
 import XCTest
-import Regex
+import RegEx
 
 class NoOverlapTests: XCTestCase {
 
     func testNonOverlapping() throws {
-        let regex = try Regex(pattern: "aa")
+        let regex = try RegEx(pattern: "aa")
         let matches = regex.matches(in: "aaaa")
         XCTAssertEqual(matches.count, 2)
         XCTAssertEqual(matches[0].values.count, 1)
@@ -21,7 +21,7 @@ class NoOverlapTests: XCTestCase {
     }
 
     func testNonOverlappingGroups() throws {
-        let regex = try Regex(pattern: "(aa)")
+        let regex = try RegEx(pattern: "(aa)")
         let matches = regex.matches(in: "aaaa")
         XCTAssertEqual(matches.count, 2)
         XCTAssertEqual(matches[0].values.count, 2)

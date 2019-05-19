@@ -25,6 +25,8 @@ extension ExponentTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__ExponentTests = [
+        ("testExact", testExact),
+        ("testExactFails", testExactFails),
         ("testExponents", testExponents),
         ("testExponentsStarStar", testExponentsStarStar),
     ]

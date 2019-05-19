@@ -1,18 +1,18 @@
 //
 //  ExponentTests.swift
-//  RegexTests
+//  RegExTests
 //
 //  Created by Eneko Alonso on 5/13/19.
 //
 
 import XCTest
-import Regex
+import RegEx
 
 final class ExponentTests: XCTestCase {
 
     func testExponents() throws {
         let str = "16^32=2^128"
-        let regex = try Regex(pattern: #"\d+\^(\d+)"#)
+        let regex = try RegEx(pattern: #"\d+\^(\d+)"#)
         let matches = regex.matches(in: str)
 
         XCTAssertEqual(matches.count, 2)
@@ -28,7 +28,7 @@ final class ExponentTests: XCTestCase {
 
     func testExponentsStarStar() throws {
         let str = "16**32=2**128"
-        let regex = try Regex(pattern: #"\d+\*\*(\d+)"#)
+        let regex = try RegEx(pattern: #"\d+\*\*(\d+)"#)
         let matches = regex.matches(in: str)
 
         XCTAssertEqual(matches.count, 2)
@@ -44,13 +44,13 @@ final class ExponentTests: XCTestCase {
 
     func testExact() throws {
         let str = "16^32"
-        let regex = try Regex(pattern: #"^\d+\^(\d+)$"#)
+        let regex = try RegEx(pattern: #"^\d+\^(\d+)$"#)
         XCTAssertTrue(regex.test(str))
     }
 
     func testExactFails() throws {
         let str = "16^32=2^128"
-        let regex = try Regex(pattern: #"^\d+\^(\d+)$"#)
+        let regex = try RegEx(pattern: #"^\d+\^(\d+)$"#)
         XCTAssertFalse(regex.test(str))
     }
 }
