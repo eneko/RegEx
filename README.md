@@ -13,7 +13,7 @@
 The resulting `Match` structure contains the **full match**, any **captured groups**, and corresponding 
 Swift **string ranges**.
 
-By using `Range<String.Index>` and `Substring`, `Regex.Match` is able to return all this information without
+By using `Range<String.Index>` and `Substring`, `RegEx.Match` is able to return all this information without
 duplicating data from the input string 👏
 
 ## Usage
@@ -103,17 +103,17 @@ public class RegEx {
 
 extension RegEx {
     public class Iterator: IteratorProtocol {
-        let regex: Regex
+        let regex: RegEx
         let string: String
-        var current: Regex.Match?
+        var current: RegEx.Match?
 
-        init(regex: Regex, string: String) {
+        init(regex: RegEx, string: String) {
             self.regex = regex
             self.string = string
             current = regex.firstMatch(in: string)
         }
 
-        public func next() -> Regex.Match? {
+        public func next() -> RegEx.Match? {
             defer {
                 current = current.flatMap {
                     let index = $0.ranges[0]?.upperBound
@@ -138,10 +138,10 @@ Add the following code to your `Package.swift` :
 
 ```
 dependencies: [
-    .package(url: "https://github.com/eneko/Regex.git", from: "0.1.0")
+    .package(url: "https://github.com/eneko/RegEx.git", from: "0.1.0")
 ],
 targets: {
-    .target(name: "YourTarget", dependencies: ["Regex"])
+    .target(name: "YourTarget", dependencies: ["RegEx"])
 }
 ```
 

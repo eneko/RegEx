@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public class Regex {
+public class RegEx {
     private let regex: NSRegularExpression
 
     public init(pattern: String, options: NSRegularExpression.Options = []) throws {
@@ -53,19 +53,19 @@ public class Regex {
 }
 
 
-extension Regex {
+extension RegEx {
     public class Iterator: IteratorProtocol {
-        let regex: Regex
+        let regex: RegEx
         let string: String
-        var current: Regex.Match?
+        var current: RegEx.Match?
 
-        init(regex: Regex, string: String) {
+        init(regex: RegEx, string: String) {
             self.regex = regex
             self.string = string
             current = regex.firstMatch(in: string)
         }
 
-        public func next() -> Regex.Match? {
+        public func next() -> RegEx.Match? {
             defer {
                 current = current.flatMap {
                     let index = $0.ranges[0]?.upperBound

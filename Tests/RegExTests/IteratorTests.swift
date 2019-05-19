@@ -30,7 +30,7 @@ class IteratorTests: XCTestCase {
         amet, nisi.
         """
 
-    let regex = try? Regex(pattern: #"[a-zA-Z]+m\b"#)
+    let regex = try? RegEx(pattern: #"[a-zA-Z]+m\b"#)
 
     func testOneByOne() {
         let first = regex?.firstMatch(in: loremIpsum)
@@ -40,7 +40,7 @@ class IteratorTests: XCTestCase {
     }
 
     func testIterator() throws {
-        let regex = try Regex(pattern: #"[a-zA-Z]+m\b"#)
+        let regex = try RegEx(pattern: #"[a-zA-Z]+m\b"#)
         let iterator = regex.iterator(for: loremIpsum)
         XCTAssertEqual(iterator.next()?.values[0], "Lorem")
         XCTAssertEqual(iterator.next()?.values[0], "ipsum")
