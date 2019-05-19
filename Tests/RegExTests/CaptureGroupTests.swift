@@ -1,12 +1,12 @@
 //
 //  CaptureGroupTests.swift
-//  RegexTests
+//  RegExTests
 //
 //  Created by Eneko Alonso on 5/18/19.
 //
 
 import XCTest
-import Regex
+import RegEx
 
 class CaptureGroupTests: XCTestCase {
 

@@ -1,5 +1,7 @@
-# Regex
-`Regex` is a thin `NSRegularExpression` wrapper for easier regular expression testing and data extraction in Swift.
+# RegEx
+`RegEx` is a thin `NSRegularExpression` wrapper for easier regular expression testing and data extraction in Swift.
+
+![RegEx](/RegEx.png)
 
 #### Features
 - Test if a string matches the expression with `test()`
@@ -29,7 +31,7 @@ let expression = "\\d+\\^(\\d+)"
 
 Use the regular expression:
 ```swift
-let regex = try Regex(pattern: expression)
+let regex = try RegEx(pattern: expression)
 
 regex.test(str) // true
 
@@ -47,13 +49,12 @@ iterator.next()?.values // ["2^128", "128"]
 iterator.next()         // nil
 ```
 
-
 ## Installation
 
 No frameworks, just copy and paste!
 
 ```swift
-public class Regex {
+public class RegEx {
     private let regex: NSRegularExpression
 
     public init(pattern: String, options: NSRegularExpression.Options = []) throws {
@@ -100,7 +101,7 @@ public class Regex {
 }
 
 
-extension Regex {
+extension RegEx {
     public class Iterator: IteratorProtocol {
         let regex: Regex
         let string: String
@@ -145,4 +146,4 @@ targets: {
 ```
 
 ## Unit Tests
-If curious, you can run the tests with `$ swift test` or `$swift test --parallel`.
+If curious, you can run the tests with `$ swift test` or `$ swift test --parallel`.

@@ -1,12 +1,12 @@
 //
 //  ExponentTests.swift
-//  RegexTests
+//  RegExTests
 //
 //  Created by Eneko Alonso on 5/13/19.
 //
 
 import XCTest
-import Regex
+import RegEx
 
 final class ExponentTests: XCTestCase {
 

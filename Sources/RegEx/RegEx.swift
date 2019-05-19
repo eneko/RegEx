@@ -1,6 +1,6 @@
 //
-//  Regex.swift
-//  Regex
+//  RegEx.swift
+//  RegEx
 //
 //  Created by Eneko Alonso on 5/13/19.
 //
