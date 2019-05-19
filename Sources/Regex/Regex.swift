@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct Regex {
+public class Regex {
     private let regex: NSRegularExpression
 
     public init(pattern: String, options: NSRegularExpression.Options = []) throws {
@@ -18,6 +18,12 @@ public struct Regex {
         public let ranges: [Range<String.Index>?]
     }
 
+    public func numberOfMatches(in string: String, from index: String.Index? = nil) -> Int {
+        let startIndex = index ?? string.startIndex
+        let range = NSRange(startIndex..., in: string)
+        return regex.numberOfMatches(in: string, range: range)
+    }
+
     public func firstMatch(in string: String, from index: String.Index? = nil) -> Match? {
         let startIndex = index ?? string.startIndex
         let range = NSRange(startIndex..., in: string)
@@ -25,19 +31,15 @@ public struct Regex {
         return result.flatMap { map(result: $0, in: string) }
     }
 
-    public func matches(in string: String) -> [Match] {
-        let fullRange = NSRange(string.startIndex..., in: string)
-        let results = regex.matches(in: string, range: fullRange)
+    public func matches(in string: String, from index: String.Index? = nil) -> [Match] {
+        let startIndex = index ?? string.startIndex
+        let range = NSRange(startIndex..., in: string)
+        let results = regex.matches(in: string, range: range)
         return results.map { map(result: $0, in: string) }
     }
 
-    public func numberOfMatches(in string: String) -> Int {
-        let fullRange = NSRange(string.startIndex..., in: string)
-        return regex.numberOfMatches(in: string, range: fullRange)
-    }
-
     public func test(_ string: String) -> Bool {
-        return numberOfMatches(in: string) > 0
+        return firstMatch(in: string) != nil
     }
 
     func map(result: NSTextCheckingResult, in string: String) -> Match {
@@ -48,4 +50,33 @@ public struct Regex {
         return Match(values: substrings, ranges: ranges)
     }
 
+}
+
+
+extension Regex {
+    public class Iterator: IteratorProtocol {
+        let regex: Regex
+        let string: String
+        var current: Regex.Match?
+
+        init(regex: Regex, string: String) {
+            self.regex = regex
+            self.string = string
+            current = regex.firstMatch(in: string)
+        }
+
+        public func next() -> Regex.Match? {
+            defer {
+                current = current.flatMap {
+                    let index = $0.ranges[0]?.upperBound
+                    return self.regex.firstMatch(in: self.string, from: index)
+                }
+            }
+            return current
+        }
+    }
+
+    public func iterator(for string: String) -> Iterator {
+        return Iterator(regex: self, string: string)
+    }
 }
