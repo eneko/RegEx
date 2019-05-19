@@ -52,6 +52,16 @@ public class RegEx {
 
 }
 
+// MARK: Text Replacement
+
+extension RegEx {
+    public func stringReplacingMatches(in string: String, with template: String) -> String {
+        let range = NSRange(string.startIndex..., in: string)
+        return regex.stringByReplacingMatches(in: string, range: range, withTemplate: template)
+    }
+}
+
+// MARK: Iterator
 
 extension RegEx {
     public class Iterator: IteratorProtocol {
