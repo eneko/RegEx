@@ -1,0 +1,31 @@
+language: generic
+
+jobs:
+  include:
+    - stage: Continuous Integration
+      name: Linux Swift 5.0
+      os: linux
+      dist: trusty
+      sudo: required
+      env:
+      - SWIFT_VERSION=5.0
+      install:
+      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      script:
+      - swift test --parallel
+    - stage: Continuous Integration
+      name: macOS Swift 5.0
+      os: osx
+      osx_image: xcode10.2
+      script:
+      - swift test --parallel
+    - stage: Continuous Integration
+      name: Code Coverage (Swift 5.0)
+      os: osx
+      osx_image: xcode10.2
+      script:
+      - swift package generate-xcodeproj --enable-code-coverage
+      - xcodebuild -scheme Regex-Package test
+      after_success:
+      - bash <(curl -s https://codecov.io/bash)
+
