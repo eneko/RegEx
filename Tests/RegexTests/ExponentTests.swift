@@ -41,4 +41,16 @@ final class ExponentTests: XCTestCase {
         XCTAssertEqual(matches[1].ranges.count, 2)
         XCTAssertEqual(matches[1].values[1], "128")
     }
+
+    func testExact() throws {
+        let str = "16^32"
+        let regex = try Regex(pattern: #"^\d+\^(\d+)$"#)
+        XCTAssertTrue(regex.test(str))
+    }
+
+    func testExactFails() throws {
+        let str = "16^32=2^128"
+        let regex = try Regex(pattern: #"^\d+\^(\d+)$"#)
+        XCTAssertFalse(regex.test(str))
+    }
 }
