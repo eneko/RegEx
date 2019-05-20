@@ -33,19 +33,19 @@ class ReplacementTests: XCTestCase {
 
     func testReplaceAll() throws {
         let regex = try RegEx(pattern: #"(\w+)a\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote, withTemplate: "$1o")
+        let output = regex.replaceMatches(in: donQuixote, withTemplate: "$1o")
         XCTAssertTrue(output.hasPrefix("En un lugar de lo Mancho"))
     }
 
     func testDuplicateWordsEndingInAWithTemplate() throws {
         let regex = try RegEx(pattern: #"(\w+a)\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote, withTemplate: "$1$1")
+        let output = regex.replaceMatches(in: donQuixote, withTemplate: "$1$1")
         XCTAssertTrue(output.hasPrefix("En un lugar de lala ManchaMancha"))
     }
 
     func testDuplicateWordsEndingInAWithCustomLogic() throws {
         let regex = try RegEx(pattern: #"(\w+a)\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote) { match in
+        let output = regex.replaceMatches(in: donQuixote) { match in
             let value = String(match.values[0] ?? "")
             return value + value
         }
@@ -54,7 +54,7 @@ class ReplacementTests: XCTestCase {
 
     func testReverseWordsEndingInA() throws {
         let regex = try RegEx(pattern: #"(\w+)a\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote) { match in
+        let output = regex.replaceMatches(in: donQuixote) { match in
             let value = String(match.values[0] ?? "")
             return String(value.reversed())
         }
@@ -63,7 +63,7 @@ class ReplacementTests: XCTestCase {
 
     func testCapitalizeWordsEndingInA() throws {
         let regex = try RegEx(pattern: #"(\w+a)\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote) { match in
+        let output = regex.replaceMatches(in: donQuixote) { match in
             let value = String(match.values[0] ?? "")
             return value.uppercased()
         }
@@ -72,7 +72,7 @@ class ReplacementTests: XCTestCase {
 
     func testInitializeWordsEndingInA() throws {
         let regex = try RegEx(pattern: #"(\w+a)\b"#)
-        let output = regex.stringByReplacingMatches(in: donQuixote) { match in
+        let output = regex.replaceMatches(in: donQuixote) { match in
             let value = String(match.values[0] ?? "")
             let initial = String(value[..<value.index(after: value.startIndex)])
             return initial.uppercased() + "."

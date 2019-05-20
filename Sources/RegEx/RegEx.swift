@@ -55,12 +55,12 @@ public class RegEx {
 // MARK: Text Replacement
 
 extension RegEx {
-    public func stringByReplacingMatches(in string: String, withTemplate template: String) -> String {
+    public func replaceMatches(in string: String, withTemplate template: String) -> String {
         let range = NSRange(string.startIndex..., in: string)
         return regex.stringByReplacingMatches(in: string, range: range, withTemplate: template)
     }
 
-    public func stringByReplacingMatches(in string: String, replacement: (Match) -> String) -> String {
+    public func replaceMatches(in string: String, replacement: (Match) -> String) -> String {
         var currentIndex = string.startIndex
         var output: [String] = []
         let iterator = self.iterator(for: string)
