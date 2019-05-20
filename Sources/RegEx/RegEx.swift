@@ -55,9 +55,21 @@ public class RegEx {
 // MARK: Text Replacement
 
 extension RegEx {
-    public func stringReplacingMatches(in string: String, with template: String) -> String {
+    public func stringByReplacingMatches(in string: String, withTemplate template: String) -> String {
         let range = NSRange(string.startIndex..., in: string)
         return regex.stringByReplacingMatches(in: string, range: range, withTemplate: template)
+    }
+
+    public func stringByReplacingMatches(in string: String, replacement: (Match) -> String) -> String {
+        var currentIndex = string.startIndex
+        var output: [String] = []
+        let iterator = self.iterator(for: string)
+        while let match = iterator.next(), let matchRange = match.ranges[0] {
+            output.append(String(string[currentIndex..<matchRange.lowerBound]))
+            output.append(replacement(match))
+            currentIndex = matchRange.upperBound
+        }
+        return output.joined()
     }
 }
 
