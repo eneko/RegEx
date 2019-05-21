@@ -79,4 +79,19 @@ class ReplacementTests: XCTestCase {
         }
         XCTAssertTrue(output.hasPrefix("En un lugar de L. M."))
     }
+
+    func testIntegers() throws {
+        let regex = try RegEx(pattern: #"(\d)(\d)"#)
+        let output = regex.replaceMatches(in: "1234", withTemplate: "$2$1")
+        XCTAssertEqual(output, "2143")
+    }
+
+    func testReverseWords() throws {
+        let regex = try RegEx(pattern: #"(\w+)\b"#)
+        let output = regex.replaceMatches(in: "Hello world!")  { match in
+            let value = String(match.values[0] ?? "")
+            return String(value.reversed())
+        }
+        XCTAssertEqual(output, "olleH dlrow!")
+    }
 }

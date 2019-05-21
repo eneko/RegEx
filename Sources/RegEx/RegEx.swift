@@ -69,6 +69,7 @@ extension RegEx {
             output.append(replacement(match))
             currentIndex = matchRange.upperBound
         }
+        output.append(String(string[currentIndex...]))
         return output.joined()
     }
 }
