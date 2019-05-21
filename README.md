@@ -1,5 +1,5 @@
 # RegEx
-`RegEx` is a thin `NSRegularExpression` wrapper for easier regular expression testing and data extraction in Swift.
+`RegEx` is a thin `NSRegularExpression` wrapper for easier regular expression testing, data extraction, and replacement in Swift.
 
 ![RegEx](/RegEx.png)
 
@@ -8,7 +8,9 @@
 - Determine the number of matches in a string with `numberOfMatches(in:)`
 - Retrieve all matches in a string with `matches(in:)`
 - Retrieve the first match without processing all matches with `firstMatch(in:)`
-- Efficiently iterate over matches with `iterator()` and `next()`
+- Efficiently **iterate over matches** with `iterator()` and `next()`
+- Replace matches with a template (including capture groups)
+- Replace matches one by one with **custom replacement logic** in a closure
 
 The resulting `Match` structure contains the **full match**, any **captured groups**, and corresponding 
 Swift **string ranges**.
@@ -38,15 +40,36 @@ regex.test(str) // true
 regex.numberOfMatches(in: str) // 2
 
 let first = regex.firstMatch(in: str) // 1 match with 1 captured group
-first.values // ["16^32", "32"] 
+first?.values // ["16^32", "32"] 
 
 let matches = regex.matches(in: str) // 2 matches with 1 captured group each
+matches[0].values // ["16^32", "32"] 
 matches[1].values // ["2^128", "128"]
+```
 
+### Iterate over matches
+```swift
 let iterator = regex.iterator(for: str) // Iterate over matches one by one
 iterator.next()?.values // ["16^32", "32"] 
 iterator.next()?.values // ["2^128", "128"]
 iterator.next()         // nil
+```
+
+### Replacement with Template
+```swift
+let regex = try RegEx(pattern: #"(\d)(\d)"#)
+let result = regex.replaceMatches(in: "1234", withTemplate: "$2$1")
+// result: 2143
+```
+
+### Replacement with Custom Logic
+```swift
+let regex = try RegEx(pattern: #"(\w+)\b"#)
+let result = regex.replaceMatches(in: "Hello world!")  { match in 
+    let value = String(match.values[0] ?? "")
+    return String(value.reversed())
+}
+// result: olleH dlrow!
 ```
 
 ## Installation
