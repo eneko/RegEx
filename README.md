@@ -1,3 +1,10 @@
+![Swift 5.0+](https://img.shields.io/badge/Swift-5.0+-orange.svg)
+![Unit Tests](https://github.com/eneko/RegEx/workflows/Unit%20Test/badge.svg)
+[![codecov](https://codecov.io/gh/eneko/RegEx/branch/main/graph/badge.svg)](https://codecov.io/gh/eneko/RegEx)
+[![Swift Package Manager Compatible](https://img.shields.io/badge/spm-compatible-brightgreen.svg)](https://swift.org/package-manager)
+![Linux Compatible](https://img.shields.io/badge/linux-compatible%20🐧-brightgreen.svg)
+
+
 # RegEx
 `RegEx` is a thin `NSRegularExpression` wrapper for easier regular expression testing, data extraction, and replacement in Swift.
 
